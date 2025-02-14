@@ -7,6 +7,8 @@ export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   base: "/alexeloswift.github.io/",
   build: {
-    outDir: "dist",
+    ssr: true,
+    outDir: "dist", // Ensure Vite outputs to 'dist' instead of 'build/client'
+    emptyOutDir: true, // Clean 'dist' before building
   },
 });
