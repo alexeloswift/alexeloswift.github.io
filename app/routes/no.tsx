@@ -12,7 +12,7 @@ resend.emails.send({
 
 export default function No() {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-pink-100">
+      <div className="flex flex-col items-center justify-center h-screen bg-pink-100 min-h-screen overflow-y-auto overflow-x-hidden">
         <h1 className="text-4xl font-bold text-pink-600 mb-8">Oh. Well... I did not see that coming, are you sure?</h1>
         <img
           src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGVoNXlzdDhnOTgxbnIxNnk2d3Vrajg3OWlkZWZydzJncXBxOXp5ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9lusxBBUsTz8Fk029b/giphy.gif"
@@ -21,7 +21,7 @@ export default function No() {
         />
         <div className="space-x-4 flex items-center">
         <Link
-          to="/yes"
+          to="/"
           className="bg-green-500 text-white px-6 py-4 rounded-lg hover:bg-green-600"
         >
           No
