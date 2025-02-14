@@ -96,13 +96,13 @@ export default function Home() {
 
       <div className="space-x-4 pt-20 z-10">
         <Link
-          to="/#/yes"
+          to="/yes"
           className="bg-green-500 text-white px-12 py-4 rounded-lg hover:bg-green-600 text-2xl"
         >
           Yes
         </Link>
         <Link
-          to="/#/no"
+          to="/no"
           className="bg-red-500 text-white px-12 py-4 rounded-lg hover:bg-red-600 text-2xl"
         >
           No

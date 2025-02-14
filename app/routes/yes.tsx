@@ -1,83 +1,52 @@
-import { Link } from "react-router";
+import Confetti from 'react-confetti';
+import { useEffect, useState } from 'react';
 import FloatingHearts from "./floatinghearts";
-import { useEffect, useRef, useState } from "react";
+import { Resend } from 'resend';
 
-export function meta() {
-  return [
-    { title: "Will you be my Valentine?" },
-    { name: "description", content: "A special Valentine's Day request!" },
-  ];
-}
+const resend = new Resend('re_SPJmPSaz_D41MCiNDBxPqnggw7ut1dCPv');
+    
+resend.emails.send({
+  from: 'onboarding@resend.dev',
+  to: 'alexelo.swift@gmail.com',
+  subject: 'Congrats! She said yes',
+  html: '<p>Congrats</p>'
+});
 
-export default function Home() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [gifPositions, setGifPositions] = useState<{ top: number; left: number; url: string }[]>([]);
-
-  // List of Valentine-themed GIFs (URLs)
-  const gifs = [
-    "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWF2ODh3ZnlzbmpmcXF4cGVwc3N0b2xwaHpjcW9qdXd4OGVzZjlkayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/P3CZolxd8DeRy4g4fM/giphy.gif",
-    "https://media.giphy.com/media/l0MYKDrj6SXHzkC3u/giphy.gif",
-    "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif",
-    "https://media.giphy.com/media/xT8qB2zHyX1t1k6hS8/giphy.gif",
-  ];
+export default function Yes() {
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.play().catch(() => {
-        console.log("Autoplay was blocked, user interaction required.");
+
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
       });
-    }
 
-    // Generate random positions for GIFs
-    const newPositions = Array.from({ length: 5 }, () => ({
-      top: Math.random() * 80 + 10, // Between 10% and 90% of screen height
-      left: Math.random() * 80 + 10, // Between 10% and 90% of screen width
-      url: gifs[Math.floor(Math.random() * gifs.length)],
-    }));
+    };
 
-    setGifPositions(newPositions);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center justify-start h-screen bg-pink-100 pt-20 overflow-hidden">
-      {/* Random GIFs */}
-      {gifPositions.map((gif, index) => (
-        <img
-          key={index}
-          src={gif.url}
-          alt="Valentine GIF"
-          className="absolute w-24 h-24 opacity-80 floating-gif"
-          style={{ top: `${gif.top}%`, left: `${gif.left}%` }}
-        />
-      ))}
+    <div className="flex flex-col items-center justify-center h-screen bg-pink-100">
+      <Confetti width={windowSize.width} height={windowSize.height} />
+      <h1 className="text-4xl font-bold text-pink-600 mb-8">Yay! You made my day! 💖</h1>
+      <img
+        src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWF2ODh3ZnlzbmpmcXF4cGVwc3N0b2xwaHpjcW9qdXd4OGVzZjlkayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/P3CZolxd8DeRy4g4fM/giphy.gif"
+        alt="Happy GIF"
+        className="mb-8"
+      />
+            <FloatingHearts />
 
-      {/* Main Content */}
-      <h1 className="text-9xl font-serif text-pink-600 mb-8 text-center">
-        Will you be my <br /> Valentine?
-      </h1>
-
-      <div className="space-x-4 pt-20">
-        <Link
-          to="/#/yes"
-          className="bg-green-500 text-white px-12 py-4 rounded-lg hover:bg-green-600 text-2xl"
-        >
-          Yes
-        </Link>
-        <Link
-          to="/#/no"
-          className="bg-red-500 text-white px-12 py-4 rounded-lg hover:bg-red-600 text-2xl"
-        >
-          No
-        </Link>
-      </div>
-
-      <audio ref={audioRef} autoPlay loop>
-        <source src="/bemyvalentine.mp3" type="audio/mp3" />
+      <audio autoPlay loop>
+        <source src="/onlyyou.mp3" type="audio/mp3" />
         Your browser does not support the audio element.
       </audio>
-
-      <FloatingHearts />
     </div>
   );
 }
