@@ -1,68 +1,83 @@
-import Confetti from 'react-confetti';
-import { useEffect, useState } from 'react';
+import { Link } from "react-router";
 import FloatingHearts from "./floatinghearts";
-import { Resend } from 'resend';
+import { useEffect, useRef, useState } from "react";
 
-const resend = new Resend('re_SPJmPSaz_D41MCiNDBxPqnggw7ut1dCPv');
-    
-resend.emails.send({
-  from: 'onboarding@resend.dev',
-  to: 'alexelo.swift@gmail.com',
-  subject: 'Congrats! She said yes',
-  html: '<p>Congrats</p>'
-});
+export function meta() {
+  return [
+    { title: "Will you be my Valentine?" },
+    { name: "description", content: "A special Valentine's Day request!" },
+  ];
+}
 
-export default function Yes() {
-  const [windowSize, setWindowSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+export default function Home() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [gifPositions, setGifPositions] = useState<{ top: number; left: number; url: string }[]>([]);
+
+  // List of Valentine-themed GIFs (URLs)
+  const gifs = [
+    "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWF2ODh3ZnlzbmpmcXF4cGVwc3N0b2xwaHpjcW9qdXd4OGVzZjlkayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/P3CZolxd8DeRy4g4fM/giphy.gif",
+    "https://media.giphy.com/media/l0MYKDrj6SXHzkC3u/giphy.gif",
+    "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif",
+    "https://media.giphy.com/media/xT8qB2zHyX1t1k6hS8/giphy.gif",
+  ];
 
   useEffect(() => {
-    fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `re_SPJmPSaz_D41MCiNDBxPqnggw7ut1dCPv`, // Replace with your key
-        },
-        body: JSON.stringify({
-          from: "onboarding@resend.dev", // You need to verify this domain in Resend
-          to: "alexelo.swift@gmail.com.com", // Where you want to receive the email
-          subject: "She Said Yes! ❤️",
-          text: "Your Valentine’s request was accepted! 🎉",
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log("Email sent:", data))
-        .catch((error) => console.error("Error sending email:", error));
-
-    const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
+    const audio = audioRef.current;
+    if (audio) {
+      audio.play().catch(() => {
+        console.log("Autoplay was blocked, user interaction required.");
       });
+    }
 
-    };
+    // Generate random positions for GIFs
+    const newPositions = Array.from({ length: 5 }, () => ({
+      top: Math.random() * 80 + 10, // Between 10% and 90% of screen height
+      left: Math.random() * 80 + 10, // Between 10% and 90% of screen width
+      url: gifs[Math.floor(Math.random() * gifs.length)],
+    }));
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    setGifPositions(newPositions);
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-pink-100">
-      <Confetti width={windowSize.width} height={windowSize.height} />
-      <h1 className="text-4xl font-bold text-pink-600 mb-8">Yay! You made my day! 💖</h1>
-      <img
-        src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWF2ODh3ZnlzbmpmcXF4cGVwc3N0b2xwaHpjcW9qdXd4OGVzZjlkayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/P3CZolxd8DeRy4g4fM/giphy.gif"
-        alt="Happy GIF"
-        className="mb-8"
-      />
-            <FloatingHearts />
+    <div className="relative flex flex-col items-center justify-start h-screen bg-pink-100 pt-20 overflow-hidden">
+      {/* Random GIFs */}
+      {gifPositions.map((gif, index) => (
+        <img
+          key={index}
+          src={gif.url}
+          alt="Valentine GIF"
+          className="absolute w-24 h-24 opacity-80 floating-gif"
+          style={{ top: `${gif.top}%`, left: `${gif.left}%` }}
+        />
+      ))}
 
-      <audio autoPlay loop>
-        <source src="/onlyyou.mp3" type="audio/mp3" />
+      {/* Main Content */}
+      <h1 className="text-9xl font-serif text-pink-600 mb-8 text-center">
+        Will you be my <br /> Valentine?
+      </h1>
+
+      <div className="space-x-4 pt-20">
+        <Link
+          to="/#/yes"
+          className="bg-green-500 text-white px-12 py-4 rounded-lg hover:bg-green-600 text-2xl"
+        >
+          Yes
+        </Link>
+        <Link
+          to="/#/no"
+          className="bg-red-500 text-white px-12 py-4 rounded-lg hover:bg-red-600 text-2xl"
+        >
+          No
+        </Link>
+      </div>
+
+      <audio ref={audioRef} autoPlay loop>
+        <source src="/bemyvalentine.mp3" type="audio/mp3" />
         Your browser does not support the audio element.
       </audio>
+
+      <FloatingHearts />
     </div>
   );
 }
