@@ -10,6 +10,7 @@ export function meta() {
 }
 
 export default function Home() {
+  const [showText, setShowText] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [gifPositions, setGifPositions] = useState<{ top: number; left: number; size: number; url: string }[]>([]);
 
@@ -90,8 +91,15 @@ export default function Home() {
       ))}
 
       {/* Main Content */}
-      <h1 className="text-9xl font-serif text-pink-600 mb-8 text-center z-10">
-        Will you be my <br /> Valentine?
+      <button
+        className="bg-green-500 text-white px-12 py-4 rounded-lg hover:bg-green-600 text-2xl z-10"
+        onClick={() => setShowText(true)}
+      >
+        Click me!
+      </button>
+      {showText && <p className="text-4xl font-serif text-pink-600 mt-8 text-center z-10 pb-16">Turn your volume up baby.</p>}
+      <h1 className="text-9xl md:text-9xl sm:text-5xl font-serif text-pink-600 mb-8 text-center z-10">
+      Will you be my <br /> Valentine?
       </h1>
 
       <div className="space-x-4 pt-20 z-10">
